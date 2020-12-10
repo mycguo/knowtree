@@ -1,6 +1,25 @@
-* BrainTool
+* TODO BrainTool
 BrainTool is a tool
+
 ** Category-Tag
 They are the same
+
 ** [[http://www.link.com][Link]]
-URL with a name
+URL with a name and [[http://google.com][embedded links]] scattered about.
+
+* Top Level 2                                             :braintool:orgmode:
+  :PROPERTIES:
+  :VISIBILITY: folded
+  :END:
+
+** next 2.1
+
+** next 2.2
+
+* Top 3
+
+** next 3.1
+
+* Top 4
+
+** next 4.1

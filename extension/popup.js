@@ -7,7 +7,7 @@ var tagDiv = document.getElementById('tag');
 var newTag = document.getElementById('newtag');
 var CurrentTab;
 
-function storeBTTab(tabId, tries) {
+function storeBTTab(tabId, tries = 0) {
     // set the global variable on the background page
     var bg = chrome.extension.getBackgroundPage();
     if (!bg) {
@@ -21,16 +21,17 @@ function storeBTTab(tabId, tries) {
 }
     
 function windowOpen() {
+    // Called on first click on header button, create the BT panel window
     var wargs = {
-        'url' : "http://localhost:8000/app", // "https://tconfrey.github.io/BrainTool/app", 
-        //'url' : "https://BrainTool.org/app", 
+//        'url' : "http://localhost:8000/app", // "https://tconfrey.github.io/BrainTool/app", 
+        'url' : "https://BrainTool.org/app", 
         'type' : "panel",
         'top' : 10, 'left' : 10,
         'width' : 500, 'height' : 1100 
     };
     chrome.windows.create(wargs, function(window) {
         console.log("window was opened");
-        storeBTTab(window.tabs[0].id, 0);
+        storeBTTab(window.tabs[0].id);
     });
 }
 
@@ -85,7 +86,7 @@ newTag.onkeyup = function(e) {
 
 
 function tabAdded() {
-    // Call out to the content script to add current tab to BT
+    // Call out to the content script which will get current tab and add to BT
     var nt = newTag.value;                                     // value from text entry field
     var BTTabId = chrome.extension.getBackgroundPage().BTTab;  // extension global for bttab
     
@@ -106,6 +107,7 @@ function tabAdded() {
                 alert("Must be an error! ");
             window.close();
         });
+    console.count('new_tab');
 }
 
 // Listen for messages from other components
@@ -118,5 +120,6 @@ chrome.runtime.onMessage.addListener((msg, sender) => {
         }
         break;
     }
+    console.count("IN:"+msg.msg);
 });
     

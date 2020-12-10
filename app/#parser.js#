@@ -1,7 +1,10 @@
 var AllNodes = [];
 
 function parseBTFile(fileText) {
-    // crearte and recursively walk orga parse tree to create bt model
+    // create and recursively walk orga parse tree to create bt model
+
+    // First clean up from any previous state
+    
     const parseTree = orgaparse(fileText);
     for (const orgaNode of parseTree.children) {
         if (orgaNode.type == "section")
