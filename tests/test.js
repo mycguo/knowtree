@@ -1,6 +1,70 @@
 window.LOCALTEST = true;
 QUnit.config.reorder = false;
 
+QUnit.module("BTNode tests", function() {
+
+    QUnit.begin(function() {
+        console.log("BTNode tests. Set up goes here");
+        AllNodes = [];
+    });
+
+    QUnit.test("Basic BTNode Tests", function(assert) {
+        const node1 = new BTNode("[[https://testing/1/2/3][Test Node]]");
+        assert.equal (node1.URL, "https://testing/1/2/3", "getURL");
+        const node2 = new BTNode("[[file:file.org][Test Node]]", node1.id);
+        assert.equal (node2.URL, "", "getURL w file:");
+        assert.equal (node2.id, 2, "Ids managed ok");
+        assert.equal (node2.parentId, 1, "parent hooked up ok");
+        assert.deepEqual (node1.childIds, [2], "child hooked up ok");
+	    assert.equal (node2.displayTag, "Test Node", "display Tag ok");
+	
+	    node2.title = "Pre [[https://testing/1/2/3][Test Node2]] and [[foo][bar]]";
+	    assert.equal (node2.displayTag, "Pre Test Node2 and bar", "display Tag updated ok");
+	    
+	    node2.title = "Pre [[https://testing/1/2/3][]]";
+	    assert.equal (node2.displayTag, "Pre https://testing/1/2/3", "display Tag defaults ok");
+    });
+
+    QUnit.test("Functional BTNode Tests", function(assert) {
+	    const n1 = new BTNode("Top Level");
+	    const n2 = new BTNode("Second Level", n1.id);
+	    const n3 = new BTNode("[[file:somefile][file link]] blah", n2.id);
+	    const n4 = new BTNode("[[http://google.com][goog]] also blah", n2.id);
+	    assert.notOk (n3.hasWebLinks, "file: links are not web links");
+	    assert.ok (n4.hasWebLinks, "http links are web links");
+	    assert.ok ((n1.hasWebLinks && n2.hasWebLinks), "weblinkage bubbles up to ancestors");
+    });
+
+    QUnit.test("Basic BTAppNode Tests", function(assert) {
+        const an1 = new BTAppNode("Top Level", null, "AppNode 1", 1);
+        const an2 = new BTAppNode("Second Level", an1.id, "AppNode 2", 2);
+        const an3 = new BTAppNode("[[file:somefile][file link]] blah", an2.id, "AppNode 3", 3);
+        const an4 = new BTAppNode("[[http://google.com][goog]] also blah", an2.id, "AppNode 4", 3);
+        assert.equal (an4.level, 3, "Level ok");
+        assert.equal (an2.parentId, an1.id, "Parenting ok");
+        assert.equal (an4.URL, "http://google.com", "URL passthru ok");
+        assert.equal (an4.displayTag, "goog also blah", "displayTag passthru ok");
+        assert.equal (an4.displayTitle(), "<a href='http://google.com' class='btlink'>goog</a> also blah", "dispTitle");
+        assert.equal (an3.level, 3, "Level ok on creation");
+        an2.resetLevel(1);
+        assert.equal (an3.level, 2, "Level reset ok");
+        assert.notOk (an1.hasOpenChildren(), "initial open captured correctly");
+        an4.isOpen = true;
+        assert.ok (an4.isOpen, "child open ok");
+        assert.ok (an2.hasOpenChildren(), "parent openChildren updated ok");
+        const baseAn1 = {
+            "_URL": an1.URL,
+            "_childIds": an1.childIds,
+            "_displayTag": "Top Level",
+            "_id": an1.id,
+            "_isOpen": false,
+            "_parentId": null,
+            "_title": "Top Level"
+        }
+        assert.propEqual(baseAn1, an1.toBTNode(), "base class generation");
+    });
+});
+                
 
 QUnit.module("App tests", function() {
 

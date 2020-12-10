@@ -44,11 +44,13 @@ table.treetable tbody tr td {
   padding: .3em .1em;           /* changed from 1.0 to left align for better use of space*/
 }
 
+/*
 table.treetable span {
   background-position: center left;
   background-repeat: no-repeat;
   padding: .2em 0 .2em 1.5em;
 }
+*/
 
 table.treetable span.file {
   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADoSURBVBgZBcExblNBGAbA2ceegTRBuIKOgiihSZNTcC5LUHAihNJR0kGKCDcYJY6D3/77MdOinTvzAgCw8ysThIvn/VojIyMjIyPP+bS1sUQIV2s95pBDDvmbP/mdkft83tpYguZq5Jh/OeaYh+yzy8hTHvNlaxNNczm+la9OTlar1UdA/+C2A4trRCnD3jS8BB1obq2Gk6GU6QbQAS4BUaYSQAf4bhhKKTFdAzrAOwAxEUAH+KEM01SY3gM6wBsEAQB0gJ+maZoC3gI6iPYaAIBJsiRmHU0AALOeFC3aK2cWAACUXe7+AwO0lc9eTHYTAAAAAElFTkSuQmCC);
@@ -71,7 +73,7 @@ table.treetable tr.branch {
 }
 
 table.treetable tr.selected {
-    background-color: #cd72ae /*#4b9643;  #cfc;*/
+    background-color: #9d9; /* #cd72ae #4b9643;  #cfc;*/
 /*  background-color: #3875d7;
   color: #fff; */
 }
@@ -111,13 +113,10 @@ table.treetable tr span.elipse {
 
 
 table.treetable tr.opened {
-    background-color: #EFE;
+    background-color: #cec;
 }
 tr.opened td.left {
     font-weight: bold;
-}
-table.treetable td.middle {
-    width: 1.6em;
 }
 td.left {
     vertical-align: middle;
@@ -130,40 +129,15 @@ table.treetable span.btText {
 table.treetable span.btTitle {
     padding-left: 0px;
 }
-
-
-#button {
-    height: 0.85em;
-    width: 1.4em;
-    background-color: #4b9643; /* #9d9; */
-    padding: 0px;
-    border: 0px;
-    margin-left: auto;
-    margin-right: auto;
-    cursor: pointer;
+table.treetable tr.hovered {
+    background-color: #7bb07b; /* #aca; */
 }
 
-dialog {
-  border: 1px solid rgba(0, 0, 0, 0.3);
-  border-radius: 6px;
-  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
-  width: 80%;
-  position: fixed;
+table.treetable tr.dropTarget {
+    background-color: #191;
 }
-
-dialog textarea {
-    width: 90%;
-    height: 5em;
-}
-#editText {
-    margin-right: 0px;
-    margin-left: 10px;
-}
-
-#buttonDiv {
-    width: 80%;
-    margin: auto;
-    padding-top: 10px;
-    display: flex;
-    justify-content: space-around;
+table.treetable td.dropOver {
+    border-bottom-style: solid;
+    border-bottom-color: grey;
+    border-bottom-width: 3px;
 }

@@ -5,8 +5,7 @@ window.addEventListener('message', function(event) {
     // Handle message from Window
     if (event.source != window)
         return;
-    console.log('content_script.js got message from Window:', event);
-    console.count("Content-IN:"+event.data.type);
+    console.log(`Content-IN ${event.data.type} from bt.js:`, event);
     switch (event.data.type) {
     case 'tags_updated':
         // pull tags info from message and post to local storage
@@ -46,6 +45,15 @@ window.addEventListener('message', function(event) {
         });
         console.count('Content-OUT:tag_open');
         break;
+    case 'close_node':
+        // pass on to background
+        chrome.runtime.sendMessage({
+            from: 'btwindow',
+            msg: 'close_node',
+            nodeId: event.data.nodeId
+        });
+        console.count('Content-OUT:close_node');
+        break;
     case 'node_deleted':
         // pass on
         chrome.runtime.sendMessage({
@@ -55,6 +63,17 @@ window.addEventListener('message', function(event) {
         });
         console.count('Content-OUT:node_deleted');
         break;
+    case 'node_reparented':
+        // pass on
+        chrome.runtime.sendMessage({
+            from: 'btwindow',
+            msg: 'node_reparented',
+            nodeId: event.data.nodeId,
+            parentId: event.data.parentId,
+            index: event.data.index
+        });
+        console.count('Content-OUT:node_reparented');
+        break;
     case 'show_node':
         // pass on
         chrome.runtime.sendMessage({
@@ -62,7 +81,7 @@ window.addEventListener('message', function(event) {
             msg: 'show_node',
             nodeId: event.data.nodeId
         });
-        console.count('Content-OUT:node_deleted');
+        console.count('Content-OUT:show_node');
         break;
     case 'LOCALTEST':
         // pass on
@@ -77,8 +96,7 @@ window.addEventListener('message', function(event) {
 chrome.runtime.onMessage.addListener((msg, sender, response) => {
     // Handle messages from extension
 
-    console.log("Content script received msg from app:" + msg);
-    console.count("Content-IN:"+msg.type);
+    console.log(`Content-IN ${msg.type} from background.js:`, msg);
     switch (msg.type) {
     case 'keys':                // info about gdrive app
         window.postMessage({type: 'keys', 'client_id': msg.client_id, 'api_key': msg.api_key});
@@ -88,8 +106,7 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
     case 'new_tab':             // new tab to be added to BT
         chrome.storage.local.get('tabsList', function (data) {
             var tab = data.tabsList[0];
-            console.log("adding " + tab.title + " w tag [" + msg.tag + "]");
-            window.postMessage({type: 'new_tab', tag: msg.tag, tab: tab});
+            window.postMessage({type: 'new_tab', tag: msg.tag, tab: tab, note: msg.note});
             console.count('Content-OUT:new_tab');
         });
         response("cheers mate");
@@ -106,11 +123,13 @@ chrome.runtime.onMessage.addListener((msg, sender, response) => {
 });
 
 
-// Let extension know bt window is ready to open gdrive app
-if (!window.LOCALTEST) {
+// Let extension know bt window is ready to open gdrive app. Only run once
+var NotLoaded = true;
+if (!window.LOCALTEST && NotLoaded) {
     chrome.runtime.sendMessage({
         from: 'btwindow',
         msg: 'window_ready',
     });
+    NotLoaded = false;
     console.count('Content-OUT:window_ready');
 }
